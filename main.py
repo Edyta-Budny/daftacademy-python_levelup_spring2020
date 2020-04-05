@@ -8,8 +8,8 @@ from starlette.requests import Request
 from fastapi.responses import JSONResponse
 
 app = FastAPI()
-counter: int = 0
-patients = []
+app.counter = 0
+app.patients = []
 
 
 # exercises from lecture number 1
@@ -60,19 +60,17 @@ class CreatePatientResp(BaseModel):
 
 @app.post("/patient", response_model=CreatePatientResp)
 def create_patient(pt: CreatePatientRq):
-    global counter, patients
 
-    patients.append(pt)
-    patient = CreatePatientRq(id=counter, patient=pt)
-    counter += 1
+    app.patients.append(pt)
+    patient = CreatePatientRq(id=app.counter, patient=pt)
+    app.counter += 1
     return patient
 
 
 @app.get("/patient/{pk}", response_model=CreatePatientRq)
 def verification_patient(pk: int):
-    global patients
 
-    if pk >= counter or pk <= 0:
+    if pk >= app.counter or pk <= 0:
         raise JSONResponse(status_code=204)
     else:
-        return patients[pk]
+        return app.patients[pk]

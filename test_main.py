@@ -28,23 +28,23 @@ def test_hello_world():
     assert response.json() == {"message": "Hello World during the coronavirus pandemic!"}
 
 
-def test_method_name():
-    response = client.get("/method")
-    assert response.status_code == 200
-    assert response.json() == {"method": "GET" or "POST" or "DELETE" or "PUT"}
-
-
-def test_create_patient(patient):
-    global counter
-
-    response = client.post("/patient", json=patient)
-    assert response.status_code == 200
-    assert response.json() == {}
-    counter += 1
-
-
-def test_verification_patient(pk, patient):
-    response = client.get(f"/patient/{pk}")
-    assert response.status_code == 200
-    assert response.json() == {"name": patient['name'], "surename": patient['surename']}
+# def test_method_name():
+#     response = client.get("/method")
+#     assert response.status_code == 200
+#     assert response.json() == {"method": "GET" or "POST" or "DELETE" or "PUT"}
+#
+#
+# def test_create_patient(patient):
+#     global counter
+#
+#     response = client.post("/patient", json=patient)
+#     assert response.status_code == 200
+#     assert response.json() == {}
+#     counter += 1
+#
+#
+# def test_verification_patient(pk, patient):
+#     response = client.get(f"/patient/{pk}")
+#     assert response.status_code == 200
+#     assert response.json() == {"name": patient['name'], "surename": patient['surename']}
 
