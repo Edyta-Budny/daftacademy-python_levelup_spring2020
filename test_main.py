@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 import pytest
-from lecture_exercise import app
+from main import app
 
 client = TestClient(app)
 
