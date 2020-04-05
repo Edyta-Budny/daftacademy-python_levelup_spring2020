@@ -59,11 +59,11 @@ class CreatePatientResp(BaseModel):
 
 
 @app.post("/patient", response_model=CreatePatientResp)
-def create_patient(pt: CreatePatientResp):
+def create_patient(pt: CreatePatientRq):
     global counter, patients
 
     patients.append(pt)
-    patient = CreatePatientResp(id=counter, patient=pt)
+    patient = CreatePatientRq(id=counter, patient=pt)
     counter += 1
     return patient
 
@@ -72,7 +72,7 @@ def create_patient(pt: CreatePatientResp):
 def verification_patient(pk: int):
     global patients
 
-    if pk > counter or pk <= 0:
+    if pk >= counter or pk <= 0:
         raise JSONResponse(status_code=204)
     else:
         return patients[pk]
