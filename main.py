@@ -3,6 +3,7 @@ from typing import Dict
 from fastapi import FastAPI
 
 from pydantic import BaseModel
+from starlette.requests import Request
 
 app = FastAPI()
 
@@ -36,3 +37,7 @@ class GiveMeSomethingResp(BaseModel):
 def receive_something(rq: GiveMeSomethingRq):
     return GiveMeSomethingResp(received=rq.dict())
 
+
+@app.api_route("/method", methods=["GET", "POST", "DELETE", "DELETE"])
+async def method_name(request: Request):
+    return {"method": request.method}
