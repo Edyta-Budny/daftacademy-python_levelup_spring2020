@@ -9,7 +9,9 @@ app = FastAPI()
 
 @app.get("/")
 def hello_world():
-    return {"message": "Hello World"}
+    # example from lecture number 1
+    # return {"message": "Hello World"}
+    return {"message": "Hello World during the coronavirus pandemic!"}
 
 
 class HelloResp(BaseModel):
