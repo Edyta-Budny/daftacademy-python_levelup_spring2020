@@ -63,7 +63,7 @@ def create_patient(pt: CreatePatientResp):
     global counter, patients
 
     patients.append(pt)
-    patient = CreatePatientResp(id=counter, patient=pt)
+    patient = CreatePatientResp(N=counter, patient=pt)
     counter += 1
     return patient
 
