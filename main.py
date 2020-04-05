@@ -38,6 +38,6 @@ def receive_something(rq: GiveMeSomethingRq):
     return GiveMeSomethingResp(received=rq.dict())
 
 
-@app.api_route("/method", methods=["GET", "POST", "DELETE", "DELETE"])
+@app.api_route("/method", methods=["GET", "POST", "DELETE", "PUT"])
 async def method_name(request: Request):
     return {"method": request.method}
