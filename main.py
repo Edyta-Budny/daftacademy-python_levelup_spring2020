@@ -60,7 +60,6 @@ class CreatePatientResp(BaseModel):
 
 @app.post("/patient", response_model=CreatePatientResp)
 def create_patient(pt: CreatePatientRq):
-
     app.patients.append(pt)
     patient = CreatePatientRq(id=app.counter, patient=pt)
     app.counter += 1
@@ -69,8 +68,7 @@ def create_patient(pt: CreatePatientRq):
 
 @app.get("/patient/{pk}", response_model=CreatePatientRq)
 def verification_patient(pk: int):
-
     if pk >= app.counter or pk <= 0:
-        raise JSONResponse(status_code=204)
+        raise JSONResponse(status_code=404)
     else:
         return app.patients[pk]
