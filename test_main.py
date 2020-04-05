@@ -39,7 +39,7 @@ def test_create_patient(patient):
 
     response = client.post("/patient", json=patient)
     assert response.status_code == 200
-    assert response.json() == {"N": counter, "patient": patient}
+    assert response.json() == {}
     counter += 1
 
 
