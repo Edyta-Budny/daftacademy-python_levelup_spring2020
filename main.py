@@ -54,7 +54,7 @@ class CreatePatientRq(BaseModel):
 
 
 class CreatePatientResp(BaseModel):
-    N = int
+    id = int
     patient = CreatePatientRq
 
 
@@ -63,7 +63,7 @@ def create_patient(pt: CreatePatientResp):
     global counter, patients
 
     patients.append(pt)
-    patient = CreatePatientResp(N=counter, patient=pt)
+    patient = CreatePatientResp(id=counter, patient=pt)
     counter += 1
     return patient
 
@@ -72,7 +72,7 @@ def create_patient(pt: CreatePatientResp):
 def verification_patient(pk: int):
     global patients
 
-    if pk >= counter or pk < 0:
-        raise JSONResponse(status_code=204, content={})
+    if pk > counter or pk <= 0:
+        raise JSONResponse(status_code=204)
     else:
         return patients[pk]
