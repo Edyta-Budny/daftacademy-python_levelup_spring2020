@@ -1,16 +1,13 @@
 from fastapi.testclient import TestClient
 import pytest
+import requests
 from main import app
 
 client = TestClient(app)
+counter = 0
 
 
-def test_hello_world():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {"message": "Hello World during the coronavirus pandemic!"}
-
-
+# exercises from lecture number 1
 @pytest.mark.parametrize("name", ['Zenek', 'Marek', 'Alojzy Niezdąży'])
 def test_hello_name(name):
     response = client.get(f"/hello/{name}")
@@ -22,3 +19,32 @@ def test_receive_something():
     response = client.post("/dej/mi/coś", json={'first_key': 'some_value'})
     assert response.json() == {"received": {'first_key': 'some_value'},
                                "constant_data": "python jest super"}
+# end of exercises from lecture number 1
+
+
+def test_hello_world():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"message": "Hello World during the coronavirus pandemic!"}
+
+
+def test_method_name():
+    response = client.get("/method")
+    assert response.status_code == 200
+    assert response.json() == {"method": "GET" or "POST" or "DELETE" or "PUT"}
+
+
+def test_create_patient(patient):
+    global counter
+
+    response = client.post("/patient", json=patient)
+    assert response.status_code == 200
+    assert response.json() == {"N": counter, "patient": patient}
+    counter += 1
+
+
+def test_verification_patient(pk, patient):
+    response = client.get(f"/patient/{pk}")
+    assert response.status_code == 200
+    assert response.json() == {"name": patient['name'], "surename": patient['surename']}
+
