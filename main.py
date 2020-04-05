@@ -62,18 +62,17 @@ class CreatePatientResp(BaseModel):
 def create_patient(patient: CreatePatientResp):
     global counter, patients
 
-    patient = CreatePatientResp(N=counter, patient=patient)
     patients.append(patient)
     counter += 1
-    return patient
+    return patients
 
 
 @app.get("/patient/{pk}")
 def verification_patient(pk: int):
     global patients
 
-    patient_found = next((patient for patient in patients if patient.N == pk), None)
-    if patient_found:
+    if pk < len(patients):
+        return patients[pk - 1]
         return patient_found.patient
     else:
         raise JSONResponse(status_code=204, content={})
