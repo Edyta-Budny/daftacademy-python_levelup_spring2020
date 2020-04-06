@@ -3,13 +3,15 @@ from typing import Dict
 from fastapi import FastAPI
 
 from pydantic import BaseModel
-from starlette.requests import Request
+
+from fastapi.requests import Request
 
 from fastapi.responses import JSONResponse
 
+
 app = FastAPI()
-app.counter = 0
-app.patients = []
+counter = 0
+patients = []
 
 
 # exercises from lecture number 1
@@ -58,17 +60,22 @@ class CreatePatientResp(BaseModel):
     patient = CreatePatientRq
 
 
-@app.post("/patient", response_model=CreatePatientResp)
-def create_patient(pt: CreatePatientRq):
-    app.patients.append(pt)
-    patient = CreatePatientRq(id=app.counter, patient=pt)
-    app.counter += 1
+@app.post("/patient")
+def create_patient(patient: CreatePatientRq):
+    global counter, patients
+
+    patient = CreatePatientResp(id=counter, patient=patient)
+    patients.append(patient)
+    counter += 1
     return patient
 
 
-@app.get("/patient/{pk}", response_model=CreatePatientRq)
+@app.get("/patient/{pk}")
 def verification_patient(pk: int):
-    if pk >= app.counter or pk <= 0:
-        raise JSONResponse(status_code=404)
+    global patients
+
+    patient_searched = next((patient for patient in patients if patient.id == pk), None)
+    if patient_searched:
+        return patient_searched.patient
     else:
-        return app.patients[pk]
+        return JSONResponse(status_code=204, content={})
