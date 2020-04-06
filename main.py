@@ -1,13 +1,9 @@
 from typing import Dict
 
 from fastapi import FastAPI
-
-from pydantic import BaseModel
-
 from fastapi.requests import Request
-
 from fastapi.responses import JSONResponse
-
+from pydantic import BaseModel
 
 app = FastAPI()
 counter = 0
