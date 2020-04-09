@@ -31,27 +31,3 @@ def test_method_name():
     response = client.get("/method")
     assert response.status_code == 200
     assert response.json() == {"method": "GET" or "POST" or "DELETE" or "PUT"}
-
-
-@pytest.mark.parametrize('patient', [
-                                    {'name': 'Piotr', 'surename': 'Janowski'},
-                                    {'name': 'Roża', 'surename': 'Łańcucka'},
-                                    ])
-def test_create_patient(patient):
-    global counter
-
-    response = client.post("/patient", json=patient)
-    assert response.status_code == 200
-    assert response.json() == {"id": counter, "patient": patient}
-    counter += 1
-
-
-@pytest.mark.parametrize('pk, patient', [
-                                    pytest.param(1, {'name': 'Piotr', 'surename': 'Janowski'}),
-                                    pytest.param(2, {'name': 'Roża', 'surename': 'Łańcucka'}),
-                                    ])
-def test_verification_patient(pk, patient):
-    response = client.get(f"/patient/{pk}")
-    assert response.status_code == 200 or 204
-    assert response.json() == {"name": patient['name'], "surename": patient['surename']}
-

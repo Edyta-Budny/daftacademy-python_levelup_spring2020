@@ -5,9 +5,15 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+
+class Patient(BaseModel):
+    name: str
+    surename: str
+
+
 app = FastAPI()
 counter = 0
-patients = []
+list_of_patients: Dict[int, Patient] = {}
 
 
 # exercises from lecture number 1
@@ -46,32 +52,21 @@ async def method_name(request: Request):
     return {"method": request.method}
 
 
-class CreatePatientRq(BaseModel):
-    name: str
-    surename: str
-
-
-class CreatePatientResp(BaseModel):
-    id = int
-    patient = CreatePatientRq
-
-
 @app.post("/patient")
-def create_patient(patient: CreatePatientRq):
-    global counter, patients
+def create_patient(patient: Patient):
+    global counter, list_of_patients
 
-    patient = CreatePatientResp(id=counter, patient=patient)
-    patients.append(patient)
+    resp = {id: counter, "patient": patient}
+    list_of_patients[counter] = patient
     counter += 1
-    return patient
+    return resp
 
 
 @app.get("/patient/{pk}")
 def verification_patient(pk: int):
-    global patients
+    global list_of_patients
 
-    patient_searched = next((patient for patient in patients if patient.id == pk), None)
-    if patient_searched:
-        return patient_searched.patient
+    if pk in list_of_patients:
+        return list_of_patients.get(pk)
     else:
         return JSONResponse(status_code=204, content={})
