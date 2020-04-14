@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 import pytest
-from main import app
+from D_like_deploy.main import app
 
 client = TestClient(app)
 counter = 0
@@ -21,6 +21,7 @@ def test_receive_something():
 # end of exercises from lecture number 1
 
 
+# homework from lecture number 1
 def test_hello_world():
     response = client.get("/")
     assert response.status_code == 200
@@ -31,3 +32,4 @@ def test_method_name():
     response = client.get("/method")
     assert response.status_code == 200
     assert response.json() == {"method": "GET" or "POST" or "DELETE" or "PUT"}
+# end of homework from lecture number 1

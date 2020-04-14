@@ -41,6 +41,7 @@ def receive_something(rq: GiveMeSomethingRq):
 # end of exercises from lecture number 1
 
 
+# homework from lecture number 1
 @app.get("/")
 def hello_world():
     # example from lecture number 1: return {"message": "Hello World"}
@@ -70,3 +71,4 @@ def verification_patient(pk: int):
         return list_of_patients.get(pk)
     else:
         return JSONResponse(status_code=204, content={})
+# end of homework from lecture number 1
