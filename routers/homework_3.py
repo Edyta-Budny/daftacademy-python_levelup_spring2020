@@ -44,7 +44,7 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
     return response
 
 
-@router.post("/logout")
+@router.post("/logout", dependencies=[Depends(verify_token), Depends(verify_key)])
 async def logout():
     if verify_token and verify_key is not True:
         response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
