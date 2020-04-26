@@ -39,8 +39,8 @@ def authorized(cookie_key: str):
 
 
 @router.get("/")
-@authorized(router.session_token)
 @router.get("/welcome")
+@authorized(router.session_token)
 async def welcome_text(request: Request):
     return templates.TemplateResponse("welcome.html", {"request": request, 'user': user['login']})
 
@@ -62,9 +62,9 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
     return response
 
 
-@authorized(router.session_token)
 @router.post("/logout")
-async def logout():
+@authorized(router.session_token)
+async def logout(request: Request):
     response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
-    response.delete_cookie("session_token")
+    response.delete_cookie(router.session_token)
     return response
