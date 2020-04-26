@@ -1,4 +1,3 @@
-# homework from lecture number 2
 import datetime
 
 from functools import wraps
