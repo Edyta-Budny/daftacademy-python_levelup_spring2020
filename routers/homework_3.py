@@ -29,11 +29,11 @@ async def welcome_text(request: Request):
 
 @router.get("/welcome")
 async def welcome_text(request: Request, session_token: str = Depends(authentication)):
-    if session_token is not None:
+    if session_token is None:
+        return RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
+    else:
         username = router.sessions[session_token]
         return templates.TemplateResponse("welcome_login.html", {"request": request, 'user': username})
-    else:
-        return RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 @router.post("/login")
@@ -55,9 +55,9 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
 
 @router.post("/logout")
 async def logout(session_token: str = Depends(authentication)):
-    if session_token is not None:
+    if session_token is None:
+        return RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
+    else:
         response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
         router.sessions.pop("session_token")
         return response
-    else:
-        return RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
