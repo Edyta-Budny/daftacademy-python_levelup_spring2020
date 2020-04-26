@@ -43,7 +43,7 @@ def receive_something(rq: GiveMeSomethingRq):
 
 # homework from lecture number 1
 @app.get("/")
-def hello_world():
+async def hello_world():
     # example from lecture number 1: return {"message": "Hello World"}
     return {"message": "Hello World during the coronavirus pandemic!"}
 
@@ -72,3 +72,11 @@ def verification_patient(pk: int):
     else:
         return JSONResponse(status_code=204, content={})
 # end of homework from lecture number 1
+
+
+# homework from lecture number 3
+@app.get("/welcome")
+async def welcome_text():
+    return {"message": "Welcome to the python world!"}
+# end of homework from lecture number 3
+
