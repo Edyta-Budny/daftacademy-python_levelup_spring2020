@@ -1,7 +1,7 @@
 from hashlib import sha256
 import secrets
 
-from fastapi import APIRouter, Depends, HTTPException, status, Header, Request, Response, Cookie
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Cookie
 from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
@@ -16,15 +16,6 @@ security = HTTPBasic()
 templates = Jinja2Templates(directory="templates")
 
 
-# async def verify_token(token: str = Header(...)):
-#     if token != "session_token":
-#         return True
-#
-#
-# async def verify_key(secret_key: str = Header(...)):
-#     if secret_key != router.secret_key:
-#         return True
-
 def authentication(session_token: str = Cookie(None)):
     if session_token not in router.session:
         session_token = None
@@ -38,9 +29,9 @@ async def welcome_text(request: Request):
 
 @router.get("/welcome")
 async def welcome_text(request: Request, session_token: str = Depends(authentication)):
-    # if verify_token and verify_key is not True:
     if session_token is not None:
-        return templates.TemplateResponse("welcome_login.html", {"request": request, 'user': user['login']})
+        username = router.sessions[session_token]
+        return templates.TemplateResponse("welcome_login.html", {"request": request, 'user': username})
     else:
         return RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
 
@@ -57,7 +48,6 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
         )
     session_token = sha256(str.encode(f"{credentials.username}{credentials.password}{router.secret_key}")).hexdigest()
     response = RedirectResponse(url="/welcome", status_code=status.HTTP_302_FOUND)
-    # response.set_cookie(key="session_token", value=session_token)
     router.session[session_token] = credentials.username
 
     return response
@@ -65,7 +55,6 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
 
 @router.post("/logout")
 async def logout(session_token: str = Depends(authentication)):
-    # if verify_token and verify_key is not True:
     if session_token is not None:
         response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
         router.sessions.pop("session_token")
