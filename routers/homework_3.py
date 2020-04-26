@@ -13,14 +13,12 @@ security = HTTPBasic()
 
 async def verify_token(token: str = Header(...)):
     if token != "session_token":
-        result = RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
-        return result
+        return False
 
 
 async def verify_key(secret_key: str = Header(...)):
     if secret_key != router.secret_key:
-        result = RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
-        return result
+        return False
 
 
 @router.get("/welcome", dependencies=[Depends(verify_token), Depends(verify_key)])
@@ -48,6 +46,10 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
 
 @router.post("/logout", dependencies=[Depends(verify_token), Depends(verify_key)])
 async def logout():
-    response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
-    response.delete_cookie("session_token")
-    return response
+    if verify_token and verify_key is not False:
+        response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+        response.delete_cookie("session_token")
+        return response
+    else:
+        response = RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
+        return response
