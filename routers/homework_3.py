@@ -21,7 +21,7 @@ async def verify_key(secret_key: str = Header(...)):
         return True
 
 
-@router.get("/welcome", dependencies=[Depends(verify_token), Depends(verify_key)])
+@router.get("/welcome")
 @router.get("/")
 async def welcome_text():
     return {"message": "Welcome to the python world!"}
@@ -44,7 +44,7 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
     return response
 
 
-@router.post("/logout", dependencies=[Depends(verify_token), Depends(verify_key)])
+@router.post("/logout")
 async def logout():
     if verify_token and verify_key is not True:
         response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
@@ -53,3 +53,4 @@ async def logout():
     else:
         response = RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
         return response
+
