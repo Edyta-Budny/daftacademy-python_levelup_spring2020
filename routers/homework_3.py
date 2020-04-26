@@ -1,14 +1,15 @@
+from functools import wraps
 from hashlib import sha256
 import secrets
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Cookie
+from fastapi import APIRouter, Depends, HTTPException, status, Header, Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
 router = APIRouter()
 router.secret_key = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-router.session = {}
+router.session_token = "session_token"
 user = {'login': 'trudnY', 'password': 'PaC13Nt'}
 
 security = HTTPBasic()
@@ -16,10 +17,25 @@ security = HTTPBasic()
 templates = Jinja2Templates(directory="templates")
 
 
-def authentication(session_token: str = Cookie(None)):
-    if session_token not in router.session:
-        session_token = None
-    return session_token
+def authorized(cookie_key: str):
+    def decorator(f):
+        @wraps(f)
+        async def decorated_function(request: Request, *args, **kwargs):
+            # run some method that checks the request
+            # for the client's authorization status
+            is_authorized = request.cookies.get(cookie_key)
+
+            if is_authorized:
+                # the user is authorized.
+                # run the handler method and return the response
+                return await f(request, *args, **kwargs)
+            else:
+                # the user is not authorized.
+                return RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
+
+        return decorated_function
+
+    return decorator
 
 
 @router.get("/")
@@ -27,13 +43,10 @@ async def welcome_text(request: Request):
     return templates.TemplateResponse("welcome.html", {"request": request})
 
 
+@authorized(router.session_token)
 @router.get("/welcome")
-async def welcome_text(request: Request, session_token: str = Depends(authentication)):
-    if session_token is None:
-        return RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
-    else:
-        username = router.sessions[session_token]
-        return templates.TemplateResponse("welcome_login.html", {"request": request, 'user': username})
+async def welcome_text(request: Request):
+    return templates.TemplateResponse("welcome_login.html", {"request": request, 'user': user['login']})
 
 
 @router.post("/login")
@@ -48,16 +61,14 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
         )
     session_token = sha256(str.encode(f"{credentials.username}{credentials.password}{router.secret_key}")).hexdigest()
     response = RedirectResponse(url="/welcome", status_code=status.HTTP_302_FOUND)
-    router.session[session_token] = credentials.username
+    response.set_cookie(key=router.session_token, value=session_token)
 
     return response
 
 
+@authorized(router.session_token)
 @router.post("/logout")
-async def logout(session_token: str = Depends(authentication)):
-    if session_token is None:
-        return RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
-    else:
-        response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
-        router.sessions.pop("session_token")
-        return response
+async def logout():
+    response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+    response.delete_cookie("session_token")
+    return response
