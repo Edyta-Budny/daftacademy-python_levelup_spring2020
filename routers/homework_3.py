@@ -30,8 +30,6 @@ async def welcome_text(request: Request):
 async def welcome_text(request: Request):
     if authorization is not True:
         return templates.TemplateResponse("welcome_login.html", {"request": request, 'user': user['login']})
-    else:
-        return RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 @router.post("/login")
