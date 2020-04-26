@@ -1,7 +1,7 @@
 from hashlib import sha256
 import secrets
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Header
 from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
@@ -11,9 +11,21 @@ router.secret_key = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e
 security = HTTPBasic()
 
 
-@router.get("/welcome")
+async def verify_token(token: str = Header(...)):
+    if token != "session_token":
+        result = RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
+        return result
+
+
+async def verify_key(secret_key: str = Header(...)):
+    if secret_key != router.secret_key:
+        result = RedirectResponse(url='/', status_code=status.HTTP_401_UNAUTHORIZED)
+        return result
+
+
+@router.get("/welcome", dependencies=[Depends(verify_token), Depends(verify_key)])
 @router.get("/")
-def welcome_text():
+async def welcome_text():
     return {"message": "Welcome to the python world!"}
 
 
@@ -28,7 +40,14 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
             headers={"WWW-Authenticate": "Basic"},
         )
     session_token = sha256(str.encode(f"{credentials.username}{credentials.password}{router.secret_key}")).hexdigest()
-    response = RedirectResponse(url='/welcome', status_code=status.HTTP_302_FOUND)
+    response = RedirectResponse(url="/welcome", status_code=status.HTTP_302_FOUND)
     response.set_cookie(key="session_token", value=session_token)
 
+    return response
+
+
+@router.post("/logout", dependencies=[Depends(verify_token), Depends(verify_key)])
+async def logout():
+    response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+    response.delete_cookie("session_token")
     return response
