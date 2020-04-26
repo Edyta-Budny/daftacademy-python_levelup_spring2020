@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 import pytest
-from D_like_deploy.main import app
+from app import app
 
 client = TestClient(app)
 counter = 0
