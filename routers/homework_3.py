@@ -2,7 +2,7 @@ from functools import wraps
 from hashlib import sha256
 import secrets
 
-from fastapi import APIRouter, Depends, HTTPException, status, Header, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
@@ -39,14 +39,10 @@ def authorized(cookie_key: str):
 
 
 @router.get("/")
-async def welcome_text(request: Request):
-    return templates.TemplateResponse("welcome.html", {"request": request})
-
-
 @authorized(router.session_token)
 @router.get("/welcome")
 async def welcome_text(request: Request):
-    return templates.TemplateResponse("welcome_login.html", {"request": request, 'user': user['login']})
+    return templates.TemplateResponse("welcome.html", {"request": request, 'user': user['login']})
 
 
 @router.post("/login")
