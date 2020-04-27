@@ -18,7 +18,7 @@ list_of_patients = {}
 
 @router.post("/patient")
 @authorized(SESSION_TOKEN)
-def create_patient(request: Request, patient: Patient):
+async def create_patient(request: Request, patient: Patient):
     global list_of_patients
 
     if len(list_of_patients.keys()) == 0:
@@ -33,7 +33,7 @@ def create_patient(request: Request, patient: Patient):
 
 @router.get("/patient")
 @authorized(SESSION_TOKEN)
-def get_patients(request: Request):
+async def get_patients(request: Request):
     if len(list_of_patients) != 0:
         return list_of_patients
 
@@ -42,7 +42,7 @@ def get_patients(request: Request):
 
 @router.get("/patient/{pk}")
 @authorized(SESSION_TOKEN)
-def get_patient(request: Request, pk: int):
+async def get_patient(request: Request, pk: int):
     global list_of_patients
 
     if pk in list_of_patients.keys():
@@ -53,7 +53,7 @@ def get_patient(request: Request, pk: int):
 
 @router.delete("/patient/{pk}")
 @authorized(SESSION_TOKEN)
-def delete_patient(request: Request, pk: int):
+async def delete_patient(request: Request, pk: int):
     global list_of_patients
 
     if pk in list_of_patients.keys():
