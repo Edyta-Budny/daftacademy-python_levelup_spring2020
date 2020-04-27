@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Request, status
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi import APIRouter, Request, status, Response
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 
 from credentials_variables import SESSION_TOKEN
@@ -33,29 +33,32 @@ def create_patient(request: Request, patient: Patient):
 
 @router.get("/patient")
 @authorized(SESSION_TOKEN)
-def get_patients(request: Request):
+def get_patients(request: Request, response: Response):
+    global list_of_patients
+
     if len(list_of_patients) != 0:
         return list_of_patients
-    return JSONResponse(status_code=204)
+
+    response.status_code = status.HTTP_204_NO_CONTENT
 
 
 @router.get("/patient/{pk}")
 @authorized(SESSION_TOKEN)
-def get_patient(request: Request, pk: int):
+def get_patient(request: Request, response: Response, pk: int):
     global list_of_patients
 
     if pk in list_of_patients.keys():
         return list_of_patients[pk]
-    else:
-        return JSONResponse(status_code=204)
+
+    response.status_code = status.HTTP_204_NO_CONTENT
 
 
 @router.delete("/patient/{pk}")
 @authorized(SESSION_TOKEN)
-def delete_patient(request: Request, pk: int):
+def delete_patient(request: Request, response: Response, pk: int):
     global list_of_patients
 
     if pk in list_of_patients.keys():
         del list_of_patients[pk]
 
-    return JSONResponse(status_code=204)
+    response.status_code = status.HTTP_204_NO_CONTENT
