@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from routers import lecture_1, homework_1, users, patients
+from routers import homework_1, lecture_1, patients, users
 
 app = FastAPI()
 

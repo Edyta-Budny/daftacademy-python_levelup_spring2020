@@ -1,12 +1,12 @@
-from hashlib import sha256
 import secrets
+from hashlib import sha256
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
-from credentials_variables import SESSION_TOKEN, SECRET_ACCESS_KEY
+from credentials_variables import SECRET_ACCESS_KEY, SESSION_TOKEN
 from decorators.authorized import authorized
 
 router = APIRouter()
