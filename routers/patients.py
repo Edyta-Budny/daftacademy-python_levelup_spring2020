@@ -2,10 +2,8 @@ from fastapi import APIRouter, Request, Response, status
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 
-from credentials_variables import SESSION_TOKEN
+from security_credentials import SESSION_TOKEN
 from decorators.authorized import authorized
-
-router = APIRouter()
 
 
 class Patient(BaseModel):
@@ -13,6 +11,7 @@ class Patient(BaseModel):
     surname: str
 
 
+router = APIRouter()
 list_of_patients = {}
 
 

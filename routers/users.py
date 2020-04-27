@@ -6,13 +6,13 @@ from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
-from credentials_variables import SECRET_ACCESS_KEY, SESSION_TOKEN
+from security_credentials import SECRET_ACCESS_KEY, SESSION_TOKEN, user
 from decorators.authorized import authorized
 
 router = APIRouter()
-user = {'login': 'trudnY', 'password': 'PaC13Nt'}
 
 security = HTTPBasic()
+
 
 templates = Jinja2Templates(directory="templates")
 
@@ -21,7 +21,7 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/welcome")
 @authorized(SESSION_TOKEN)
 async def welcome_text(request: Request):
-    return templates.TemplateResponse("welcome.html", {"request": request, 'user': user['login']})
+    return templates.TemplateResponse("welcome.html", {"request": request, "user": ["login"]})
 
 
 @router.post("/login")
