@@ -34,10 +34,7 @@ async def create_patient(request: Request, patient: Patient):
 @router.get("/patient")
 @authorized(SESSION_TOKEN)
 async def get_patients(request: Request):
-    if len(list_of_patients) != 0:
-        return list_of_patients
-
-    return Response(status_code=204)
+    return list_of_patients
 
 
 @router.get("/patient/{pk}")
