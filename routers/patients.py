@@ -34,7 +34,9 @@ def create_patient(request: Request, patient: Patient):
 @router.get("/patient")
 @authorized(SESSION_TOKEN)
 def get_patients(request: Request):
-    return list_of_patients
+    if len(list_of_patients) != 0:
+        return list_of_patients
+    return JSONResponse(status_code=204)
 
 
 @router.get("/patient/{pk}")
