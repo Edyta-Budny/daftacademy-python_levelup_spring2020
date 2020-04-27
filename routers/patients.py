@@ -56,4 +56,4 @@ def delete_patient(request: Request, pk: int):
     if pk in list_of_patients.keys():
         del list_of_patients[pk]
 
-        return JSONResponse(status_code=204)
+    return JSONResponse(status_code=204)
