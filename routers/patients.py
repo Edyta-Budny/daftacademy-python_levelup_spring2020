@@ -33,32 +33,30 @@ def create_patient(request: Request, patient: Patient):
 
 @router.get("/patient")
 @authorized(SESSION_TOKEN)
-def get_patients(request: Request, response: Response):
-    global list_of_patients
-
+def get_patients(request: Request):
     if len(list_of_patients) != 0:
         return list_of_patients
 
-    response.status_code = status.HTTP_204_NO_CONTENT
+    return Response(status_code=204)
 
 
 @router.get("/patient/{pk}")
 @authorized(SESSION_TOKEN)
-def get_patient(request: Request, response: Response, pk: int):
+def get_patient(request: Request, pk: int):
     global list_of_patients
 
     if pk in list_of_patients.keys():
         return list_of_patients[pk]
-
-    response.status_code = status.HTTP_204_NO_CONTENT
+    else:
+        return Response(status_code=204)
 
 
 @router.delete("/patient/{pk}")
 @authorized(SESSION_TOKEN)
-def delete_patient(request: Request, response: Response, pk: int):
+def delete_patient(request: Request, pk: int):
     global list_of_patients
 
     if pk in list_of_patients.keys():
         del list_of_patients[pk]
 
-    response.status_code = status.HTTP_204_NO_CONTENT
+    return Response(status_code=204)
