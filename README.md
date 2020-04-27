@@ -1,6 +1,6 @@
 ## Daftacademy-python_levelup_spring2020
 
-* Homeworks within online course "Python Level Up" organized by Daftcode between 30th of March and 18th of May.
+Homeworks within online course "Python Level Up" organized by Daftcode between 30th of March and 18th of May.
 
 ## Syllabus
 
