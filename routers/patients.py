@@ -12,6 +12,7 @@ class Patient(BaseModel):
 
 
 router = APIRouter()
+
 list_of_patients = {}
 
 

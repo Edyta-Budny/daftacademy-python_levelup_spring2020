@@ -23,6 +23,6 @@ Homeworks within online course "Python Level Up" organized by Daftcode between 3
 
 ## Sources
 
-* Homeworks from https://github.com/daftcode/daftacademy-python_levelup-spring2020/
+* Homeworks from: https://github.com/daftcode/daftacademy-python_levelup-spring2020/
 * More information about Daftacademy: https://daftacademy.pl/
 * More information about course: https://daftacademy.pl/courses/ZW3tMZ
