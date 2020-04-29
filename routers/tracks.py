@@ -1,5 +1,12 @@
 import aiosqlite
 from fastapi import APIRouter, Response, status
+from pydantic import BaseModel
+
+
+class Album(BaseModel):
+    title: str
+    artist_id: int
+
 
 router = APIRouter()
 
@@ -35,3 +42,23 @@ async def get_composer(response: Response, composer_name: str):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {"detail": {"error": "No such composer was found!"}}
     return tracks_list
+
+
+@router.post("/albums")
+async def add_album(response: Response, album: Album, status_code=201):
+    cursor = await router.db_connection.execute(
+        "SELECT ArtistId FROM artists WHERE ArtistId = ?",
+        (album.artist_id, ))
+    artist_id = await cursor.fetchall()
+    if not artist_id:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"detail": {"error": "No artist found with the given artist_id!"}}
+    cursor = await router.db_connection.execute(
+        "INSERT INTO albums (Title, ArtistId) VALUES (? ?)",
+        (album.title, album.artist_id))
+    await router.db_connection.commit()
+    return {
+        "AlbumId": cursor.lastrowid,
+        "Title": album.title,
+        "ArtistId": album.artist_id
+    }
