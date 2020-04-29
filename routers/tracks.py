@@ -24,7 +24,7 @@ async def get_tracks(page: int = 0, per_page: int = 10):
     return tracks
 
 
-@router.get("/tracks/composers/")
+@router.get("/tracks/composers")
 async def get_composer(response: Response, composer_name: str):
     router.db_connection.row_factory = lambda cursor, x: x[0]
     cursor = await router.db_connection.execute(
