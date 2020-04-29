@@ -66,13 +66,10 @@ async def add_album(response: Response, album: Album, status_code=201):
 
 
 @router.get("/albums/{album_id}")
-async def get_album(response: Response, album_id: int):
+async def get_album(album_id: int):
     router.db_connection.row_factory = aiosqlite.Row
     cursor = await router.db_connection.execute(
         "SELECT * FROM albums WHERE AlbumId = ?",
         (album_id, ))
-    album = await cursor.fetchall()
-    if not album:
-        response.status_code = status.HTTP_404_NOT_FOUND
-        return {"detail": {"error": "No album found with the given album_id!"}}
+    album = await cursor.fetchone()
     return album
