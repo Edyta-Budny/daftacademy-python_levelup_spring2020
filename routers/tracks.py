@@ -48,7 +48,7 @@ async def get_composer(response: Response, composer_name: str):
 async def add_album(response: Response, album: Album, status_code=201):
     cursor = await router.db_connection.execute(
         "SELECT ArtistId FROM artists WHERE ArtistId = ?",
-        (album.artist_id, ))
+        (album.artist_id,))
     artist_id = await cursor.fetchall()
     if not artist_id:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -62,3 +62,13 @@ async def add_album(response: Response, album: Album, status_code=201):
         "Title": album.title,
         "ArtistId": album.artist_id
     }
+
+
+@router.get("/albums/{album_id}")
+async def get_album(album_id: int):
+    router.db_connection.row_factory = aiosqlite.Row
+    cursor = await router.db_connection.execute(
+        "SELECT * FROM albums WHERE AlbumId = ?",
+        (album_id, ))
+    album = await cursor.fetchall()
+    return album
