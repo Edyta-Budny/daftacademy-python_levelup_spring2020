@@ -48,15 +48,16 @@ async def get_composer(response: Response, composer_name: str):
 async def add_album(response: Response, album: Album, status_code=201):
     cursor = await router.db_connection.execute(
         "SELECT ArtistId FROM artists WHERE ArtistId = ?",
-        (album.artist_id,))
+        (album.artist_id, ))
     artist_id = await cursor.fetchall()
     if not artist_id:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {"detail": {"error": "No artist found with the given artist_id!"}}
     cursor = await router.db_connection.execute(
-        "INSERT INTO albums (Title, ArtistId) VALUES (? ?)",
+        "INSERT INTO albums (Title, ArtistId) VALUES (?, ?)",
         (album.title, album.artist_id))
     await router.db_connection.commit()
+    response.status_code = status.HTTP_201_CREATED
     return {
         "AlbumId": cursor.lastrowid,
         "Title": album.title,
@@ -65,10 +66,13 @@ async def add_album(response: Response, album: Album, status_code=201):
 
 
 @router.get("/albums/{album_id}")
-async def get_album(album_id: int):
+async def get_album(response: Response, album_id: int):
     router.db_connection.row_factory = aiosqlite.Row
     cursor = await router.db_connection.execute(
         "SELECT * FROM albums WHERE AlbumId = ?",
         (album_id, ))
     album = await cursor.fetchall()
+    if not album:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"detail": {"error": "No album found with the given album_id!"}}
     return album
