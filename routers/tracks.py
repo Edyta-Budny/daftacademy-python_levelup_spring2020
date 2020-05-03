@@ -89,8 +89,8 @@ async def update_customer(response: Response, customer_id: int, customer: Custom
     cursor = await router.db_connection.execute(
         "SELECT CustomerId FROM customers WHERE CustomerId = ?", (customer_id, )
     )
-    customer_id = await cursor.fetchone()
-    if not customer_id:
+    customer_row = await cursor.fetchone()
+    if not customer_row:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {"detail": {"error": "No customer found with the given customer_id!"}}
     update_date = customer.dict(exclude_unset=True)
@@ -101,8 +101,8 @@ async def update_customer(response: Response, customer_id: int, customer: Custom
                 key = "PostalCode"
             key = key.capitalize()
             sql += f"{key} = '{value}', "
-        sql = sql[:-2] + f" WHERE CustomerId = {customer_id}"
-        cursor = await router.db_connection.execute(sql)
+        sql = sql[:-2] + f" WHERE CustomerId = ?"
+        cursor = await router.db_connection.execute(sql, (customer_id, ))
         await router.db_connection.commit()
     router.db_connection.row_factory = aiosqlite.Row
     cursor = await router.db_connection.execute(
