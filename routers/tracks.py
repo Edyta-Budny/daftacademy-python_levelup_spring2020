@@ -113,7 +113,7 @@ async def update_customer(response: Response, customer_id: int, customer: Custom
 
 
 @router.get("/sales")
-async def data_customers(response: Response, category: str):
+async def get_statistic(response: Response, category: str):
     if category == "customers":
         router.db_connection.row_factory = aiosqlite.Row
         cursor = await router.db_connection.execute("""

@@ -7,7 +7,7 @@ Homeworks within online course "Python Level Up" organized by Daftcode between 3
 - [x]  D like deploy (FastAPI, web application)
 - [x] A like art (Decorators)
 - [x] F like ficzur (Web application)
-- [ ] T like table (SQL, SQLite)
+- [x] T like table (SQL, SQLite)
 - [ ] O like ORM (SQLAlchemy)
 - [ ] A like asyncio (Asyncio)
 - [ ] C like cloud (Google Cloud Products)
