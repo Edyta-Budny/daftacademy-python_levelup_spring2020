@@ -116,13 +116,24 @@ async def update_customer(response: Response, customer_id: int, customer: Custom
 async def data_customers(response: Response, category: str):
     if category == "customers":
         router.db_connection.row_factory = aiosqlite.Row
-        cursor = await router.db_connection.execute(
-            """SELECT invoices.CustomerId, Email, Phone, ROUND(SUM(Total), 2) AS Sum
-            FROM invoices JOIN customers on invoices.CustomerId = customers.CustomerId
-            GROUP BY invoices.CustomerId ORDER BY Sum DESC, invoices.CustomerId"""
-        )
+        cursor = await router.db_connection.execute("""
+        SELECT invoices.CustomerId, Email, Phone, ROUND(SUM(Total), 2) AS Sum
+        FROM invoices JOIN customers on invoices.CustomerId = customers.CustomerId
+        GROUP BY invoices.CustomerId ORDER BY Sum DESC, invoices.CustomerId
+        """)
         customer_statistics = await cursor.fetchall()
         return customer_statistics
+
+    elif category == "genres":
+        router.db_connection.row_factory = aiosqlite.Row
+        cursor = await router.db_connection.execute("""
+        SELECT genres.Name, SUM(Quantity) AS Sum FROM invoice_items
+        JOIN tracks ON invoice_items.TrackId = tracks.TrackId
+        JOIN genres ON tracks.GenreId = genres.GenreId
+        GROUP BY tracks.GenreId ORDER BY Sum DESC, genres.Name
+        """)
+        genres_statistics = await cursor.fetchall()
+        return genres_statistics
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {"detail": {"error": "No statistics found for this category!"}}
