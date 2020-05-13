@@ -36,7 +36,8 @@ async def get_tracks(page: int = 0, per_page: int = 10):
     router.db_connection.row_factory = aiosqlite.Row
     cursor = await router.db_connection.execute(
         "SELECT * FROM tracks ORDER BY TrackId LIMIT :per_page OFFSET :per_page*:page",
-        {"page": page, "per_page": per_page})
+        {"page": page, "per_page": per_page}
+    )
     tracks = await cursor.fetchall()
     return tracks
 
@@ -56,8 +57,9 @@ async def get_composer(response: Response, composer_name: str):
 
 @router.post("/albums")
 async def add_album(response: Response, album: Album, status_code=201):
-    cursor = await router.db_connection.execute("SELECT ArtistId FROM artists WHERE ArtistId = ?",
-                                                (album.artist_id,))
+    cursor = await router.db_connection.execute(
+        "SELECT ArtistId FROM artists WHERE ArtistId = ?", (album.artist_id,)
+    )
     artist_id = await cursor.fetchall()
     if not artist_id:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -134,6 +136,7 @@ async def get_statistic(response: Response, category: str):
         """)
         genres_statistics = await cursor.fetchall()
         return genres_statistics
+
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {"detail": {"error": "No statistics found for this category!"}}
