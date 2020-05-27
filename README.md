@@ -10,7 +10,7 @@ Homeworks within online course "Python Level Up" organized by Daftcode between 3
 - [x] T like table (SQL, SQLite)
 - [x] O like ORM (SQLAlchemy)
 - [x] A like asyncio (Asyncio)
-- [ ] C like cloud (Google Cloud Products)
+- [x] C like cloud (Google Cloud Products)
 
 ## Technologies
 
