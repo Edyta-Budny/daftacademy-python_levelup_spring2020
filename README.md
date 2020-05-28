@@ -19,7 +19,7 @@ Homeworks within online course "Python Level Up" organized by Daftcode between 3
 
 ## Status
 
-* I've obtained a certificate.
+I've obtained a certificate.
 
 ## Sources
 
