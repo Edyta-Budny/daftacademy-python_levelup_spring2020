@@ -9,8 +9,8 @@ idna==2.9
 more-itertools==8.2.0
 packaging==20.3
 pluggy==0.13.1
+pydantic==1.6.2
 py==1.10.0
-pydantic==1.4
 pyparsing==2.4.6
 pytest==5.4.1
 requests==2.23.0
